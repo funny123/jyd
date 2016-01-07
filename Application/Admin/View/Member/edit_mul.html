@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=">
+<title>后台管理系统</title>
+<link rel="stylesheet" href="__PUBLIC__/Admin/css/css.css">
+<script src="__PUBLIC__/Admin/js/jquery-1.9.1.js"></script>
+<script src="__PUBLIC__/Common/Layer/layer.js"></script>
+<script>
+//批量编辑用户经纪人
+function edit_mul(id){
+    parent.layer.open({
+        type: 2,
+        shadeClose: true,
+        shade: 0.5,
+        area: ['850px', '840px'],
+        title: '批量编辑账号信息',
+        content: '{:U("Member/edit_mul")}?id='+id
+    });
+}
+</script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+
+                $(".menu1 span").hover(
+                        function() {
+                            $(this).children("div").attr("style", "display: block");
+                        },
+                        function() {
+                            $(this).children("div").attr("style", "");
+                        })
+
+        });
+    </script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $("#button1").click(
+                    function() {
+                        $("tr.list").prepend("1111");
+                    });
+        });
+    </script>
+    <script type="text/javascript">
+    $("document").ready(function() {
+
+        $("#btn1").click(function () {
+
+            $("[name='checkbox']").attr("checked", 'true');//全选
+
+        })
+        $("#btn2").click(function(){
+
+            $("[name='checkbox']").attr("checked",'');//取消全选
+
+        })
+    });
+    </script>
+</head>
+
+<body>
+
+
+<div class="nav">
+    <div class="nav_title">
+        <form name="form1" method="POST" action="{:U('Member/edit_mul')}">
+            &nbsp;关键字:&nbsp;
+            <input name="keyword" type="text" id="keyword" value="" class="s26" placeholder="输入筛选项目">
+            <input type="submit" class="btn btn-danger btn-sm" value="搜索">&nbsp;
+    </div>
+    <if condition=" $_SESSION['aid'] eq 1">
+    <div class="nav_button">
+        <a href="javascript:;" onclick="edit_mul_do();"><button class="button" id="button1">+ 批量修改</button></a>
+    </div>
+    </if>
+</div>
+
+
+<div class="list">
+	  <table width="100%" border="0" cellpadding="0" cellspacing="0" class="list_table">
+      <thead>
+	    <tr class="action">
+            <td width="2%" id="add1"><div align="center"><input type="button" id="btn1" value="全选">
+                <input type="button" id="btn2" value="反选">
+            </div></td>
+	      <td width="2%" id="ad"><div align="center">ID</div></td>
+	      <td width=6%"><div align="center">真实姓名</div></td>
+	      <td width="6%"><div align="center">经纪人</div></td>
+	      <td width="5%"><div align="center">小组</div></td>
+            <td width="5%"><div align="center">部门</div></td>
+        </tr>
+        </thead>
+        <tbody>
+        <foreach name="data" item="vo">
+	    <tr id="del{$vo.id}" class="list">
+            <td><div align="center"><input type="checkbox" name="checkbox" value="{$vo.id}"/></div></td>
+	      <td height="50" id="add"><div align="center" id="id">{$vo.id}</div></td>
+	      <td><div align="center">{$vo.realname}</div></td>
+	      <!--<td><div align="center">{$vo.tel|tel_sub}</div></td>-->
+            <!--<td><div align="center">-->
+                <!--<select name="tel1" id="tel1">-->
+                <!--<option value=""><a class="a_button" href="javascript:;" onClick="viewtel({$vo.id});">{$vo.tel|tel_sub}</a></option>-->
+                    <!--<option value=""><a class="a_button" href="javascript:;" onClick="viewtel({$vo.id});">查看完整手机号</a></option>-->
+                    <!--<option value=""><a class="a_button" href="javascript:;" onClick="viewtel({$vo.id});">发送短信</a></option>-->
+
+                <!--</select>-->
+                <!--</div></td>-->
+	      <td><div align="center">{$vo.agentname}</div></td>
+            <td><div align="center">{$vo.group}</div></td>
+            <td><div align="center">{$vo.department}</div></td>
+
+        </tr>
+        </foreach>
+        </tbody>
+  </table>
+</div>
+
+<!-- 分页 -->
+<div class="page">
+{$page}
+</div>
+
+
+</body>
+</html>

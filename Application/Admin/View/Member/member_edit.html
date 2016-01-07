@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=">
+    <title>后台管理系统</title>
+    <link rel="stylesheet" href="__PUBLIC__/Admin/css/css.css">
+    <script src="__PUBLIC__/Admin/js/jquery-1.9.1.js"></script>
+    <script src="__PUBLIC__/Common/Layer/layer.js"></script>
+    <script src="__PUBLIC__/Common/My97Date/WdatePicker.js"></script>
+    <script>
+        $(function(){
+            $('#loginname').keyup(function(){
+                var loginname = $('#loginname').val();
+                if(loginname.length >= 5){
+                    $.get("{:U('Member/check_loginname')}",{"loginname":loginname},function(data){
+                        if(data == 1){
+                            $('#loginname_trips').html(' × 账号已存在');
+                            $('#loginname_trips').css('color','red');
+                            $('#loginname_hidden').val(1);
+                        }else{
+                            $('#loginname_trips').html(' √ 账号可用');
+                            $('#loginname_trips').css('color','blue');
+                            $('#loginname_hidden').val(0);
+                        }
+                    }, "json");
+                }
+            });
+        });
+    </script>
+    <script>
+        function member_edit(){
+            var loginname = $('#loginname').val();
+
+            var time = $('#time').val();
+            var moniname = $('#moniname').val();
+            var realname = $('#realname').val();
+            var codeid = $('#codeid').val();
+            var jihuomoney = $('#jihuomoney').val();
+            var jihuotime = $('#jihuotime').val();
+            var tel = $('#tel').val();
+            var email = $('#email').val();
+            var address = $('#address').val();
+            var sex = $('#sex').val();
+            var birthday = $('#birthday').val();
+            var agentname = $('#agentname').val();
+            var kaihuform = $('#kaihuform').val();
+            var department = $('#department').val();
+            var group = $('#group').val();
+            var loginuser = $('#loginuser').val();
+            var remark = $('#remark').val();
+
+//		if(group_id == ''){
+//			layer.tips('请选择用户组', '#group_id');
+//			return false;
+//		}
+            if(loginname == ''){
+                layer.tips('请输入用户名', '#loginname');
+                return false;
+            }
+            if(loginname.length < 5){
+                layer.tips('长度不应低于5位', '#loginname');
+                return false;
+            }
+            if(moniname == ''){
+                layer.tips('请输入模拟帐号', '#moniname');
+                return false;
+            }
+            if(realname == ''){
+                layer.tips('请输入真实姓名', '#realname');
+                return false;
+            }
+
+            if(loginname_hidden == 1){
+                layer.msg('账号重复，请重新输入');
+                return false;
+            }
+            $.post(	"__SELF__",{"loginname":loginname,"time":time,"moniname":moniname,"realname":realname,"codeid":codeid,"jihuomoney":jihuomoney
+                ,"jihuotime":jihuotime,"tel":tel,"email":email,"address":address,"sex":sex,"birthday":birthday,"agentname":agentname
+                ,"kaihuform":kaihuform,"remark":remark,"loginuser":loginuser,"remark":remark,"department":department
+                ,"group":group,"remark":remark},function(data){
+                if(data == 1){
+                    layer.msg('修改成功，正在跳转中...',{icon: 1,time: 2000,shade: [0.8, '#393D49']},function(){
+                        window.location.reload();    //刷新父页面
+                    });
+                }else if(data == 2){
+                    layer.msg('分配用户组失败，请重新分配',{icon: 2,time: 2000},function(){
+                        window.location.reload();
+                    });
+                }else{
+                    layer.msg('修改失败，没修改原内容或数据格式不对',{icon: 2,time: 2000},function(){
+                        window.location.reload();
+                    });
+                }
+            }, "json");
+        }
+
+    </script>
+</head>
+<body>
+<div class="list">
+    <table width="100%" border="0" cellpadding="0" cellspacing="0" class="details">
+        <tbody>
+        <!--<tr>-->
+        <!--<td><div align="right">用户组：</div></td>-->
+        <!--<td><select name="group_id" id="group_id" style="height:32px;">-->
+        <!--<option value="">----- 请选择用户组 -----</option>-->
+        <!--<foreach name="data" item="vo">-->
+        <!--<option value="{$vo.id}">{$vo.title}</option>-->
+        <!--</foreach>-->
+        <!--</select>-->
+        <!--</td>-->
+        <!--</tr>-->
+        <tr>
+            <td width="25%"><div align="right">用户名：</div></td>
+            <td width="75%"><input type="text" name="loginname" id="loginname" size="24" value="{$vo.loginname}" />
+                <input type="hidden" id="loginname_hidden" value="0" />
+                <span id="loginname_trips"> * 长度不低于5位</span>
+            </td>
+        </tr>
+        <tr>
+            <td><div align="right">开户时间：</div></td>
+            <td><input type="text" name="time" id="time" size="34" value="{$vo.time}" class="Wdate" onFocus="WdatePicker({lang:'zh-cn',dateFmt:'yyyy/MM/dd HH:mm:ss'})"/></td>
+        </tr>
+        <tr>
+            <td><div align="right">模拟帐号：</div></td>
+            <td><input type="text" name="moniname" id="moniname" size="24" value="{$vo.moniname}" /></td>
+        </tr>
+        <tr>
+            <td><div align="right">真实姓名：</div></td>
+            <td><input type="text" name="realname" id="realname" size="24" value="{$vo.realname}" /></td>
+        </tr>
+        <tr>
+            <td><div align="right">身份证号：</div></td>
+            <td><input type="text" name="codeid" id="codeid" size="24" value="{$vo.codeid}" /></td>
+        </tr>
+        <tr>
+            <td><div align="right">激活资金(元)：</div></td>
+            <td><input type="text" name="jihuomoney" id="jihuomoney" size="24" value="{$vo.jihuomoney}" /></td>
+        </tr>
+        <tr>
+            <td><div align="right">激活时间：</div></td>
+            <td><input type="text" name="jihuotime" id="jihuotime" size="24" value="{$vo.jihuotime}" class="Wdate" onFocus="WdatePicker({lang:'zh-cn',dateFmt:'yyyy/MM/dd'})"/></td>
+        </tr>
+        <tr>
+            <td><div align="right">联系电话：</div></td>
+            <td><input type="text" name="tel" id="tel" size="24" value="{$vo.tel}" /></td>
+        </tr>
+        <tr>
+            <td><div align="right">邮箱：</div></td>
+            <td><input type="text" name="email" id="email" size="24" value="{$vo.email}" /></td>
+        </tr>
+        <tr>
+            <td><div align="right">地址：</div></td>
+            <td><input type="text" name="address" id="address" size="24" value="{$vo.address}" /></td>
+        </tr>
+        <tr>
+            <td><div align="right">性别：</div></td>
+            <td>
+                <select  name="sex" id="sex"  class="form-control">
+                    <neq name="info.sex" value=""><option value="{$vo.sex}">{$vo.sex}</option></neq>
+                    <option value="男">男</option>
+                    <option value="女">女</option>
+            </td>
+        </tr>
+        <tr>
+            <td><div align="right">生日：</div></td>
+            <td><input type="text" name="birthday" id="birthday" size="24" value="{$vo.birthday}" class="Wdate" onFocus="WdatePicker({lang:'zh-cn',dateFmt:'yyyy/MM/dd'})"/></td>
+        </tr>
+        <tr>
+            <td><div align="right">经纪人：</div></td>
+            <td><input type="text" name="agentname" id="agentname" size="24" value="{$vo.agentname}" /></td>
+        </tr>
+        <tr>
+            <td><div align="right">开户形式：</div></td>
+            <td>
+                <select  name="kaihuform" id="kaihuform"  class="form-control">
+                    <neq name="info.kaihuform" value=""><option value="{$vo.kaihuform}">{$vo.kaihuForm}</option></neq>
+                    <option value="网开">网开</option>
+                    <option value="现开">现开</option>
+                    <option value="实盘网开，模拟现开">实盘网开，模拟现开</option>
+                    <option value="模拟现开，实盘未开">模拟现开，实盘未开</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td><div align="right">部门：</div></td>
+            <td><input type="text" name="department" id="department" size="24" value="{$vo.department}" /></td>
+        </tr>
+        <tr>
+            <td><div align="right">小组：</div></td>
+            <td><input type="text" name="group" id="group" size="24" value="{$vo.group}" /></td>
+        </tr>
+        <tr>
+            <td><div align="right">登录名：</div></td>
+            <td><input type="text" name="loginuser" id="loginuser" size="24" value="{$vo.loginuser}" /></td>
+        </tr>
+        <tr>
+            <td><div align="right">备注：</div></td>
+            <td><input type="text" name="remark" id="remark" size="24" value="{$vo.remark}" /></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<div class="footer">
+    <button type="button" class="button" id="button" style="min-width:160px;" onclick="member_edit();">修 改</button>
+</div>
+
+</body>
+</html>

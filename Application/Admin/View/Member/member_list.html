@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=">
+<title>后台管理系统</title>
+<link rel="stylesheet" href="__PUBLIC__/Admin/css/css.css">
+<script src="__PUBLIC__/Admin/js/jquery-1.9.1.js"></script>
+<script src="__PUBLIC__/Common/Layer/layer.js"></script>
+<script>
+//添加用户
+function add(){
+	parent.layer.open({
+		type: 2,
+		shadeClose: true,
+		shade: 0.5,
+		area: ['850px', '840px'],
+		title: '添加用户',
+		content: '{:U("Member/member_add")}'
+	});
+}
+//导入excel用户
+function add_excel(){
+    parent.layer.open({
+        type: 2,
+        shadeClose: true,
+        shade: 0.5,
+        area: ['800px', '850'],
+        title: '导入用户',
+        content: '{:U("Member/add_excel")}'
+    });
+}
+//编辑用户
+function edit(id){
+	parent.layer.open({
+		type: 2,
+		shadeClose: true,
+		shade: 0.5,
+		area: ['850px', '840px'],
+		title: '编辑账号信息',
+		content: '{:U("Member/member_edit")}?id='+id
+	});
+}
+//批量编辑用户经纪人
+function edit_mul(id){
+    parent.layer.open({
+        type: 2,
+        shadeClose: true,
+        shade: 0.5,
+        area: ['850px', '840px'],
+        title: '批量编辑账号信息',
+        content: '{:U("Member/edit_mul")}?id='+id
+    });
+}
+//查看客户手机号
+function viewtel(id){
+    parent.layer.open({
+        type: 2,
+        shadeClose: true,
+        shade: 0.5,
+        area: ['550px', '540px'],
+        title: '查看完整手机号',
+        content: '{:U("Member/viewtel")}?id='+id
+    });
+}
+
+//删除用户
+function del(id){
+	$("#del"+id+" td").css('background','#CBDFF2');
+	parent.layer.confirm('真的要删除吗？', {
+		btn: ['确认','取消'], //按钮
+		shade: 0.5 //显示遮罩
+	}, function(){
+		$.post("{:U('Member/member_del')}", { "id": id},function(data){
+			if(data == 1){
+				parent.layer.msg('删除成功', { icon: 1, time: 1000 }, function(){
+						$("#del"+id).remove();
+					});
+			}else{
+				parent.layer.msg('删除失败', {icon: 2, time: 2000 }); 
+			}
+		}, "json");
+	},function(){
+		$("#del"+id+" td").css('border-top','0');
+		$("#del"+id+" td").css('border-bottom','1px solid #EFEFEF');
+	});
+}
+</script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+
+                $(".menu1 span").hover(
+                        function() {
+                            $(this).children("div").attr("style", "display: block");
+                        },
+                        function() {
+                            $(this).children("div").attr("style", "");
+                        })
+
+        });
+    </script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $("#button1").click(
+                    function() {
+                        $("tr.action").append("121");
+                    });
+        });
+    </script>
+</head>
+<body>
+
+
+<div class="nav">
+	<div class="nav_title">
+    	<h4><img class="nav_img" src="__PUBLIC__/Admin/img/tab.gif" /><span class="nav_a">客户列表</span></h4>
+    </div>
+    <div class="nav_title">
+    <form name="form1" method="POST" action="{:U('Member/member_list')}">
+        &nbsp;关键字:&nbsp;
+        <input name="keyword" type="text" id="keyword" value="" class="s26" placeholder="输入筛选项目">
+        <input type="submit" class="btn btn-danger btn-sm" value="搜索">&nbsp;
+    </div>
+    <if condition=" $_SESSION['aid'] eq 1">
+    <div class="nav_button">
+        <a href="javascript:;" onclick="edit_mul();"><button class="button" id="button1">+ 批量修改</button></a>
+    	<a href="javascript:;" onclick="add();"><button class="button">+ 添加用户</button></a>
+        <a href="javascript:;" onclick="add_excel();"><button class="button">+ 导入用户</button></a>
+    </div>
+    </if>
+</div>
+
+
+<div class="list">
+	  <table width="100%" border="0" cellpadding="0" cellspacing="0" class="list_table">
+      <thead>
+	    <tr class="action">
+	      <td width="2%" id="add1"><div align="center">ID</div></td>
+	      <td width="3%"><div align="center">登录帐号</div></td>
+	      <td width="3%"><div align="center">模拟帐号</div></td>
+
+          <td width="3%"><div align="center">开户时间</div></td>
+	      <td width="3%"><div align="center">客户姓名</div></td>
+            <td width="3%"><div align="center">身份证号</div></td>
+	      <td width="3%"><div align="center">登录时间</div></td>
+	      <td width="2%"><div align="center">性别</div></td>
+	      <td width="2%"><div align="center">电话</div></td>
+	      <td width="2%"><div align="center">经纪人</div></td>
+	      <td width="2%"><div align="center">小组</div></td>
+            <td width="2%"><div align="center">部门</div></td>
+            <td width="2%"><div align="center">生日</div></td>
+            <td width="3%"><div align="center">激活时间</div></td>
+            <td width="3%"><div align="center">激活资金</div></td>
+            <td width="2%"><div align="center">登录名</div></td>
+            <td width="5%"><div align="center">开户形式</div></td>
+            <td width="2%"><div align="center">备注</div></td>
+            <td width="5%"><div align="center">操作</div></td>
+        </tr>
+        </thead>
+        <tbody>
+        <foreach name="data" item="vo">
+	    <tr id="del{$vo.id}" class="list">
+	      <td height="50" id="add"><div align="center" id="id">{$vo.id}</div></td>
+	      <td><div align="center">{$vo.loginname}</div></td>
+	      <td><div align="center">{$vo.moniname}</div></td>
+          <td><div align="center">{$vo.time}</div></td>
+	      <td><div align="center">{$vo.realname}</div></td>
+            <td><div align="center">{$vo.codeid}</div></td>
+	      <td><div align="center">{$vo.time}</div></td>
+	      <td><div align="center">{$vo.sex}</div></td>
+            <td><div align="center"><a class="a_button" href="javascript:;" onClick="viewtel({$vo.id});">{$vo.tel|tel_sub}</a></div></td>
+	      <!--<td><div align="center">{$vo.tel|tel_sub}</div></td>-->
+            <!--<td><div align="center">-->
+                <!--<select name="tel1" id="tel1">-->
+                <!--<option value=""><a class="a_button" href="javascript:;" onClick="viewtel({$vo.id});">{$vo.tel|tel_sub}</a></option>-->
+                    <!--<option value=""><a class="a_button" href="javascript:;" onClick="viewtel({$vo.id});">查看完整手机号</a></option>-->
+                    <!--<option value=""><a class="a_button" href="javascript:;" onClick="viewtel({$vo.id});">发送短信</a></option>-->
+
+                <!--</select>-->
+                <!--</div></td>-->
+	      <td><div align="center">{$vo.agentname}</div></td>
+            <td><div align="center">{$vo.group}</div></td>
+            <td><div align="center">{$vo.department}</div></td>
+            <td><div align="center">{$vo.birthday}</div></td>
+            <td><div align="center">{$vo.jihuotime}</div></td>
+            <td><div align="center">{$vo.jihuomoney}</div></td>
+            <td><div align="center">{$vo.loginuser}</div></td>
+            <td><div align="center">{$vo.kaihuform}</div></td>
+            <td><div align="center">{$vo.remark}</div></td>
+	      <td><div align="center">
+	      <a class="a_button" href="javascript:;" onClick="edit({$vo.id});">编辑</a>
+          <a class="a_button" href="javascript:;" onclick="del({$vo[id]})">删除</a></if>
+          </div></td>
+        </tr>
+        </foreach>
+        </tbody>
+  </table>
+</div>
+
+<!-- 分页 -->
+<div class="page">
+{$page}
+</div>
+
+
+</body>
+</html>

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=">
+<title>后台管理系统</title>
+<link rel="stylesheet" href="__PUBLIC__/Admin/css/css.css">
+<script src="__PUBLIC__/Admin/js/jquery-1.9.1.js"></script>
+<script src="__PUBLIC__/Common/Layer/layer.js"></script>
+    <script src="__PUBLIC__/Common/My97Date/WdatePicker.js"></script>
+    <script type="text/javascript">
+        $(document).ready(
+                function () {
+                    $("#tel1").change(function () {
+                        var val=$("#tel1").val();
+//                        alert(val);
+                        if(val==1){
+                            $("#dx").html('{$data.realname}客户：您好！您的账户已申请成功。登录账号:{$data.loginname} 交易密码：123456电话密码：123456资金密码：111111感谢您在金裕道贵金属开户！为确保账户安全，请收到短信后及时修改密码。请妥善保管您的账号和密码，谢谢。');
+                        }else if(val==2){
+                            $("#dx").html('{$data.realname}客户：您好！恭喜您交易账号{$data.loginname}激活成功.');
+                        }else{
+                            $("#dx").html('{$data.realname}客户：您好！您的XX密码重置已申请成功。登录账号:{$data.loginname}交易密码：111111电话密码：111111资金密码：111111 网开登录密码：Aa123456感谢您在金裕道贵金属开户！为确保账户安全，请收到短信后及时修改密码。请妥善保管您的账号和密码，谢谢。 ');
+                        }
+                    });
+                })
+    </script>
+
+<script>
+function viewtel(){
+		var password = $('#password').val();
+		if(password == ''){
+			layer.tips('请输入密码', '#password');
+			return false;
+		}
+		if(password.length < 5){
+			layer.tips('长度不应低于5位', '#password');
+			return false;
+		}
+		$.post(	"__SELF__",{"password":password},function(data){
+				if(data == 1){
+					layer.msg('添加成功，正在跳转中...',{icon: 1,time: 2000,shade: [0.8, '#393D49']},function(){
+						window.location.reload();    //刷新父页面
+					});
+				}else if(data == 2){
+					layer.msg('分配用户组失败，请重新分配',{icon: 2,time: 2000},function(){
+						window.location.reload();
+					});
+				}else{
+					layer.msg('添加失败，请重新输入',{icon: 2,time: 2000},function(){
+						window.location.reload();
+					});
+				}
+			}, "json");
+}
+</script>
+</head>
+<body>
+<div class="list">
+	  <table width="100%" border="0" cellpadding="0" cellspacing="0" class="details">
+        <tbody>
+	      <!--<tr>-->
+	        <!--<td><div align="right">用户组：</div></td>-->
+	        <!--<td><select name="group_id" id="group_id" style="height:32px;">-->
+            		<!--<option value="">----- 请选择用户组 -----</option>-->
+                  <!--<foreach name="data" item="vo">-->
+            		<!--<option value="{$vo.id}">{$vo.title}</option>-->
+                  <!--</foreach>-->
+            	<!--</select>-->
+            <!--</td>-->
+          <!--</tr>-->
+
+          <tr>
+              <td><div align="center">手机号：</div></td>
+              <td><input type="test" name="password" id="password" size="34" value="{$data.tel|tel_sub}"/></td>
+
+          </tr>
+          <tr>
+              <td><div align="right">短信：</div></td>
+              <td><div align="center">
+              <select name="tel1" id="tel1">
+              <option value="1"><a class="a_button" href="javascript:;" onClick="viewtel({$vo.id});">实盘开户短信</a></option>
+              <option value="2"><a class="a_button" href="javascript:;" onClick="viewtel({$vo.id});">激活短信</a></option>
+              <option value="3"><a class="a_button" href="javascript:;" onClick="viewtel({$vo.id});">密码重置短信</a></option>
+
+              </select>
+              </div></td>
+
+          </tr>
+          <tr>
+
+              <td><div align="center"><textarea name="dx" id="dx" cols="30" rows="10" value="1111">{$data.realname}客户：您好！您的账户已申请成功。登录账号:{$data.loginname} 交易密码：123456电话密码：123456资金密码：111111感谢您在金裕道贵金属开户！为确保账户安全，请收到短信后及时修改密码。请妥善保管您的账号和密码，谢谢。</textarea></div></td>
+
+          </tr>
+          <div class="footer">
+     <button type="button" class="button" id="button" style="min-width:160px;" onclick="viewtel();">发送</button>
+</div>
+          </tbody>
+</body>
+</html>
